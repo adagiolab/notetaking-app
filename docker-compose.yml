@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      PGUSER: your_username
+      PGHOST: postgres
+      PGDATABASE: your_database
+      PGPASSWORD: your_password
+      PGPORT: 5432
+    depends_on:
+      - postgres
