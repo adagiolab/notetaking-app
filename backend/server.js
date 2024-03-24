@@ -31,35 +31,34 @@ app.use(express.static('public'));
 
 // GET endpoint to fetch all existing notes
 app.get('/api/notes', (req, res) => {
-    console.log('Fetching all notes!')
-    pool.query('SELECT * FROM notes', (err, result) => {
-        if (err) {
-            console.error('Error executing query', err);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-        }
-        res.json(result.rows);
-    });
- });
- 
- 
- // POST endpoint to create a new note
- app.post('/api/notes', (req, res) => {
-    console.log('Creating new note!')
-    const { title, content } = req.body;
-    pool.query('INSERT INTO notes (title, content) VALUES ($1, $2)', [title, content], (err, result) => {
-        if (err) {
-            console.error('Error executing query', err);
-            res.status(500).json({ error: 'Internal Server Error' });
-            return;
-        }
-        res.status(201).json({ message: 'Note added successfully' });
-    });
- });
- 
- 
- // Start server
- app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
- });
- 
+   console.log('Fetching all notes!')
+   pool.query('SELECT * FROM notes', (err, result) => {
+       if (err) {
+           console.error('Error executing query', err);
+           res.status(500).json({ error: 'Internal Server Error' });
+           return;
+       }
+       res.json(result.rows);
+   });
+});
+
+
+// POST endpoint to create a new note
+app.post('/api/notes', (req, res) => {
+   console.log('Creating new note!')
+   const { title, content } = req.body;
+   pool.query('INSERT INTO notes (title, content) VALUES ($1, $2)', [title, content], (err, result) => {
+       if (err) {
+           console.error('Error executing query', err);
+           res.status(500).json({ error: 'Internal Server Error' });
+           return;
+       }
+       res.status(201).json({ message: 'Note added successfully' });
+   });
+});
+
+
+// Start server
+app.listen(port, () => {
+   console.log(`Server is running on http://localhost:${port}`);
+});

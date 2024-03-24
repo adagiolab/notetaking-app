@@ -1,41 +1,57 @@
-async function fetchNotes() {
-    try {
-      const response = await fetch('/api/notes');
-      const notes = await response.json();
-      const noteList = document.getElementById('noteList');
-      noteList.innerHTML = '';
-      notes.forEach(note => {
-        const li = document.createElement('li');
-        li.textContent = `${note.title}: ${note.content}`;
-        noteList.appendChild(li);
-      });
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    }
-  }
-  
-  async function saveNote() {
-    const title = document.getElementById('title').value;
-    const content = document.getElementById('content').value;
-    if (!title || !content) {
-      alert('Please enter a title and content for the note.');
-      return;
-    }
-    try {
-      await fetch('/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, content }),
-      });
-      document.getElementById('title').value = '';
-      document.getElementById('content').value = '';
-      fetchNotes();
-    } catch (error) {
-      console.error('Error saving note:', error);
-    }
-  }
-  
-  window.onload = () => {
-    fetchNotes();
-  };
-  
+// script.js
+
+
+document.addEventListener('DOMContentLoaded', () => {
+ const noteTitleInput = document.getElementById('noteTitle');
+ const noteContentInput = document.getElementById('noteContent');
+ const saveButton = document.getElementById('saveButton');
+ const noteList = document.getElementById('noteList');
+
+
+ // Function to fetch existing notes
+ function fetchNotes() {
+     fetch('/api/notes')
+         .then(response => response.json())
+         .then(notes => {
+             noteList.innerHTML = '';
+             notes.forEach(note => {
+                 const listItem = document.createElement('li');
+                 listItem.textContent = `${note.title}: ${note.content}`;
+                 noteList.appendChild(listItem);
+             });
+         })
+         .catch(error => console.error('Error fetching notes:', error));
+ }
+
+
+ // Fetch existing notes when page loads
+ fetchNotes();
+
+
+ // Save button event listener
+ saveButton.addEventListener('click', () => {
+     const title = noteTitleInput.value;
+     const content = noteContentInput.value;
+
+
+     fetch('/api/notes', {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({ title, content })
+     })
+     .then(response => {
+         if (response.ok) {
+             noteTitleInput.value = '';
+             noteContentInput.value = '';
+             fetchNotes();
+         } else {
+             console.error('Error saving note:', response.statusText);
+         }
+     })
+     .catch(error => console.error('Error saving note:', error));
+ });
+});
+
+
